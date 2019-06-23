@@ -75,18 +75,18 @@ yum clean all && rm -rf /var/cache/yum && yum update -y
 echo "Install necessary package..."
 yum install epel-release -y && yum makecache
 yum install python-pip git net-tools htop ntp -y
-yum -y groupinstall "Development Tools"
+yum install gcc gcc-c++ gcc-g77 flex bison autoconf automake bzip2-devel zlib-devel ncurses-devel libjpeg-devel libpng-devel libtiff-devel freetype-devel pam-devel openssl-devel libxml2-devel gettext-devel pcre-devel -y
 echo "Disabling firewalld..."
 systemctl stop firewalld && systemctl disable firewalld
 echo "Setting system timezone..."
 timedatectl set-timezone Asia/Taipei && systemctl stop ntpd.service && ntpdate us.pool.ntp.org
 echo "Installing libsodium..."
-wget https://github.com/jedisct1/libsodium/releases/download/1.0.17/libsodium-1.0.17.tar.gz
-tar xf libsodium-1.0.17.tar.gz && cd libsodium-1.0.17
+wget https://codeload.github.com/jedisct1/libsodium/tar.gz/1.0.18-RELEASE
+tar xf 1.0.18-RELEASE && cd libsodium-1.0.18-RELEASE
 ./configure && make -j2 && make install
 echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
 ldconfig
-cd ../ && rm -rf libsodium*
+cd ../ && rm -rf libsodium* 1.0.18*
 if [ ! -d "/soft" ]; then
 	mkdir /soft
 else
@@ -151,7 +151,7 @@ do_mu(){
 		read mu_regex
 		echo "Writting MU config..."
 	fi
-	sed -i -e "s/MU_SUFFIX = 'zhaoj.in'/MU_SUFFIX = '${mu_suffix}'/g" -e "s/MU_REGEX = 'zhaoj.in'/MU_REGEX = '${mu_regex}'/g" userapiconfig.py
+	sed -i -e "s/MU_SUFFIX = 'zhaoj.in'/MU_SUFFIX = '${mu_suffix}'/g" -e "s/MU_REGEX = '%5m%id.%suffix'/MU_REGEX = '${mu_regex}'/g" userapiconfig.py
 }
 do_modwebapi(){
 	if [[ ${is_auto} != "y" ]]; then
